@@ -1,8 +1,19 @@
+USE [CM_Database]
+GO
 
-CREATE VIEW vNonCompliantWorkstations
-AS
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- DROP view [dbo].[vNonCompliantWorkstations]
+
+CREATE view [dbo].[vNonCompliantWorkstations]
+as
 SELECT 
 	Col.Name AS CollectionName
+	,RS.ResourceID
 	,RS.Name0 as 'Computername'
 	,LI.Title AS SoftwareUpdateGroup
 	,CASE
@@ -40,10 +51,14 @@ JOIN
 	dbo.v_UpdateScanStatus USS ON UCSAll.ResourceId = USS.ResourceID
 JOIN 
 	dbo.v_AuthListInfo LI ON UCSAll.CI_ID = LI.CI_ID
-WHERE 
-	LI.Title IN ('All Updates')
+WHERE
+	-- Change here your reference SUG
+	LI.Title IN ('All Software Updates')
 	AND
-	-- 'Software Update Compliance - Workstations' 
-	Col.CollectionID = '<CollectionID>'
-	and UCSAll.Status in (0, 2)
+	-- AB123456 = 'All Desktop Clients' or other device collection
+	Col.CollectionID = 'AB123456'
+	and 
+	UCSAll.Status in (0, 2)
 GO
+
+
